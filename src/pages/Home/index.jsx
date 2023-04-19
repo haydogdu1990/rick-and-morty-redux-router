@@ -9,20 +9,24 @@ import Error from '../../components/Error';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCharacters } from '../../redux/charactersSlice';
 
+import { Link } from 'react-router-dom';
+
 function Home() {
   const characters = useSelector((state) => state.characters.items);
   const nextPage = useSelector((state) => state.characters.page);
-  const isLoading = useSelector((state) => state.characters.isLoading);
+  const status = useSelector((state) => state.characters.status);
   const error = useSelector((state) => state.characters.error);
   const hasNextPage = useSelector((state) => state.characters.hasNextPage);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchCharacters());
-  }, [dispatch]);
+    if (status === 'idle') {
+      dispatch(fetchCharacters());
+    }
+  }, [dispatch, status]);
 
-  if (error) {
+  if (status === 'failed') {
     return <Error message={error} />;
   }
 
@@ -37,20 +41,22 @@ function Home() {
       >
         {characters.map((character) => (
           <div key={character.id}>
-            <img
-              alt={character.name}
-              src={character.image}
-              className="character"
-            />
-            <h4>{character.name}</h4>
-            <p>{character.species}</p>
-            <p>{character.origin.name}</p>
+            <Link to={`/detail/${character.id}`}>
+              <img
+                alt={character.name}
+                src={character.image}
+                className="character"
+              />
+              <h4>{character.name}</h4>
+              <p>{character.species}</p>
+              <p>{character.origin.name}</p>
+            </Link>
           </div>
         ))}
       </Masonry>
       <div>
-        {isLoading && <Loading />}
-        {hasNextPage && !isLoading && (
+        {status === 'loading' && <Loading />}
+        {hasNextPage && status !== 'loading' && (
           <button onClick={() => dispatch(fetchCharacters(nextPage))}>
             Load More ({nextPage})
           </button>

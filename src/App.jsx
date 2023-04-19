@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 
 import Home from './pages/Home';
+import Detail from './pages/Detail';
 
 import { Routes, Route, Link } from 'react-router-dom';
 
@@ -15,20 +16,15 @@ function App() {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/users">Users</Link>
+              <Link to="/detail/2">About</Link>
             </li>
           </ul>
         </nav>
 
         <Routes>
-          <Route path="/about" element={<About />} />
+          <Route path="/detail/:id" element={<Detail />} />
 
-          <Route path="/users" element={<Users />} />
-
-          <Route path="/" element={<Home />} />
+          <Route exact path="/" element={<Home />} />
         </Routes>
       </div>
     </div>
@@ -36,11 +32,3 @@ function App() {
 }
 
 export default App;
-
-function About() {
-  return <h2>About</h2>;
-}
-
-function Users() {
-  return <h2>Users</h2>;
-}
